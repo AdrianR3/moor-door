@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "moor-door",
+  "version": "${version}",
+  "name": "Moor-Door",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/moor-door/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "me.ar3.moorDoor.client.MoorDoorDataGenerator"
+    ],
+    "client": [
+      "me.ar3.moorDoor.client.MoorDoorClient"
+    ],
+    "main": [
+      "me.ar3.moorDoor.MoorDoor"
+    ]
+  },
+  "mixins": [
+    "moor-door.mixins.json",
+    {
+      "config": "moor-door.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

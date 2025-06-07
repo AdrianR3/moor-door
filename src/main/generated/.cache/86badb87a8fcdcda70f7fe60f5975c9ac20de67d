@@ -1,0 +1,16 @@
+// 1.21.5	-999999999-01-01T00:00:00	Moor-Door/Model Definitions
+7dd7b3ca8d7d66d98df10230e1f0c9a205b3f1ea assets/moor-door/blockstates/tall_door.json
+fde9c3e0d4156feee167e19d6f6c09e488cfb0ca assets/moor-door/items/tall_door.json
+5bd2e01d7f1c415c7af513bd1223caad6a32fdba assets/moor-door/models/block/tall_door_bottom_left.json
+79b9ba197016ad5747d5c05144968b90da59c3eb assets/moor-door/models/block/tall_door_bottom_left_open.json
+50d02672d6a058740329f3cb7db3a85f4165ce0c assets/moor-door/models/block/tall_door_bottom_right.json
+563f26cba6c78a4fe0b9c71d31ac775461e9ac8b assets/moor-door/models/block/tall_door_bottom_right_open.json
+9b4395a3d189beb9817db0c0b794edd9b1ac3933 assets/moor-door/models/block/tall_door_middle_left.json
+aa7d54fea32780ec2e068d9c626cba6b41b42fa4 assets/moor-door/models/block/tall_door_middle_left_open.json
+64a3c55a3d45b8262f780f0f19844263d763a267 assets/moor-door/models/block/tall_door_middle_right.json
+cf733217c75802bc4edc6ea0956c220e684e0791 assets/moor-door/models/block/tall_door_middle_right_open.json
+d0d8d6f88a11c567f90c29155c433777658ae55f assets/moor-door/models/block/tall_door_top_left.json
+a4caa72ede857462978ffaaa760e38dfa23b13ce assets/moor-door/models/block/tall_door_top_left_open.json
+dc0202942961a084a2d9a7f58779f07165b61af5 assets/moor-door/models/block/tall_door_top_right.json
+873d7024194c1dc6bb6ec6ebb150240d47281805 assets/moor-door/models/block/tall_door_top_right_open.json
+d9ad29602713abaf206d356b36dc5a6404acbdce assets/moor-door/models/item/tall_door.json
