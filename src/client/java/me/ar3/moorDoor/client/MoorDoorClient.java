@@ -1,5 +1,6 @@
 package me.ar3.moorDoor.client;
 
+import me.ar3.moorDoor.ModBlocks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,9 +11,10 @@ public class MoorDoorClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(
-                me.ar3.moorDoor.ModBlocks.TALL_DOOR,
-                net.minecraft.client.render.RenderLayer.getTranslucent()
+        BlockRenderLayerMap.INSTANCE.putBlocks(
+                net.minecraft.client.render.RenderLayer.getTranslucent(),
+                ModBlocks.STEEL_DOOR,
+                ModBlocks.PAPERBARK_DOOR
         );
     }
 }

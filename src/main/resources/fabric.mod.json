@@ -3,10 +3,10 @@
   "id": "moor-door",
   "version": "${version}",
   "name": "Moor-Door",
-  "description": "",
-  "authors": [],
+  "description": "A simple mod that adds 3-block tall doors.",
+  "authors": ["PWP"],
   "contact": {},
-  "license": "MIT",
+  "license": "ARR",
   "icon": "assets/moor-door/icon.png",
   "environment": "*",
   "entrypoints": {

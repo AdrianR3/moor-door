@@ -1,8 +1,9 @@
 package me.ar3.moorDoor;
 
-import me.ar3.moorDoor.block.CustomDoorBlock;
+import me.ar3.moorDoor.block.TripleDoorBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -16,10 +17,17 @@ import java.util.function.Function;
 
 public class ModBlocks {
 
-    public static final Block TALL_DOOR = register(
-            "tall_door",
-            CustomDoorBlock::new,
+    public static final Block STEEL_DOOR = register(
+            "steel_door",
+            settings -> new TripleDoorBlock(settings, BlockSetType.IRON),
             AbstractBlock.Settings.copy(Blocks.IRON_DOOR).nonOpaque(),
+            false
+    );
+
+    public static final Block PAPERBARK_DOOR = register(
+            "paperbark_door",
+            settings -> new TripleDoorBlock(settings, BlockSetType.BIRCH),
+            AbstractBlock.Settings.copy(Blocks.BIRCH_DOOR).nonOpaque(),
             false
     );
 

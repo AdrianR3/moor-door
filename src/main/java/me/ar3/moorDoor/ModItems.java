@@ -14,11 +14,15 @@ import java.util.function.Function;
 
 public class ModItems {
 
-    public static final Item TALL_DOOR = register("tall_door", settings -> new TallBlockItem(ModBlocks.TALL_DOOR, settings), new TallBlockItem.Settings());
+    public static final Item STEEL_DOOR_ITEM = register("steel_door", settings -> new TallBlockItem(ModBlocks.STEEL_DOOR, settings), new TallBlockItem.Settings());
+    public static final Item PAPERBARK_DOOR_ITEM = register("paperbark_door", settings -> new TallBlockItem(ModBlocks.PAPERBARK_DOOR, settings), new TallBlockItem.Settings());
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS)
-                .register((itemGroup) -> itemGroup.add(ModItems.TALL_DOOR));
+                .register((itemGroup) -> itemGroup.add(ModItems.STEEL_DOOR_ITEM));
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS)
+                .register((itemGroup) -> itemGroup.add(ModItems.PAPERBARK_DOOR_ITEM));
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

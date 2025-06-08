@@ -12,7 +12,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,14 +27,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Special door block that creates a 3-block tall door instead of the vanilla 2-block tall door
  */
-public class CustomDoorBlock extends DoorBlock {
+public class TripleDoorBlock extends DoorBlock {
 
-    public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
-    public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
+    private static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
+    private static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
     public static final EnumProperty<TripleDoorSection> SECTION = EnumProperty.of("section", TripleDoorSection.class);
 
-    public CustomDoorBlock(AbstractBlock.Settings settings) {
-        super(BlockSetType.IRON, settings);
+    public TripleDoorBlock(AbstractBlock.Settings settings, BlockSetType blockSetType) {
+        super(blockSetType, settings);
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(FACING, Direction.NORTH)
                 .with(OPEN, false)
@@ -207,13 +206,16 @@ public class CustomDoorBlock extends DoorBlock {
         BlockState middleState = world.getBlockState(middlePos);
         BlockState upperState = world.getBlockState(upperPos);
 
+//        System.out.println("TripleDoorBlock onUse at " + pos + " with state " + state + " (Lower, Middle, Upper): (" + lowerState.get(OPEN) + ", " + middleState.get(OPEN) + ", " + upperState.get(OPEN) + ")");
+
         boolean isOpen = !state.get(OPEN);
-        if (lowerState.isOf(this)) world.setBlockState(lowerPos, lowerState.with(OPEN, isOpen), Block.NOTIFY_ALL);
-        if (middleState.isOf(this)) world.setBlockState(middlePos, middleState.with(OPEN, isOpen), Block.NOTIFY_ALL);
-        if (upperState.isOf(this)) world.setBlockState(upperPos, upperState.with(OPEN, isOpen), Block.NOTIFY_ALL);
+        if (lowerState.isOf(this)) world.setBlockState(lowerPos, lowerState.with(OPEN, isOpen), Block.NOTIFY_LISTENERS);
+        if (middleState.isOf(this)) world.setBlockState(middlePos, middleState.with(OPEN, isOpen), Block.NOTIFY_LISTENERS);
+        if (upperState.isOf(this)) world.setBlockState(upperPos, upperState.with(OPEN, isOpen), Block.NOTIFY_LISTENERS);
 
         openCloseSound(world, pos, player, isOpen);
         world.emitGameEvent(player, isOpen ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
+
         return ActionResult.SUCCESS;
     }
 
@@ -223,8 +225,8 @@ public class CustomDoorBlock extends DoorBlock {
         int offsetX = direction.getOffsetX();
         int offsetZ = direction.getOffsetZ();
         Vec3d vec3d = ctx.getHitPos();
-        double d = vec3d.x - (double)blockPos.getX();
-        double f = vec3d.z - (double)blockPos.getZ();
+        double d = vec3d.x - (double) blockPos.getX();
+        double f = vec3d.z - (double) blockPos.getZ();
         return (offsetX >= 0 || !(f < 0.5)) && (offsetX <= 0 || !(f > 0.5)) && (offsetZ >= 0 || !(d > 0.5)) && (offsetZ <= 0 || !(d < 0.5)) ? DoorHinge.LEFT : DoorHinge.RIGHT;
     }
 
@@ -259,23 +261,4 @@ public class CustomDoorBlock extends DoorBlock {
         };
 
     }
-
-    public enum TripleDoorSection implements StringIdentifiable {
-
-        UPPER("upper"),
-        MIDDLE("middle"),
-        LOWER("lower");
-
-        private final String name;
-
-        TripleDoorSection(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String asString() {
-            return name;
-        }
-    }
 }
-

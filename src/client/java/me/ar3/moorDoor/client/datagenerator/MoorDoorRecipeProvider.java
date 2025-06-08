@@ -10,6 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.ItemTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -26,13 +27,22 @@ public class MoorDoorRecipeProvider extends FabricRecipeProvider {
             public void generate() {
                 RegistryWrapper.Impl<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, ModItems.TALL_DOOR)
+                createShaped(RecipeCategory.BUILDING_BLOCKS, ModItems.STEEL_DOOR_ITEM)
                         .input('#', Items.IRON_DOOR)
                         .input('X', Items.IRON_INGOT)
                         .pattern("X")
                         .pattern("X")
                         .pattern("#")
                         .criterion(hasItem(Items.IRON_INGOT), this.conditionsFromItem(Items.IRON_INGOT))
+                        .offerTo(exporter);
+
+                createShaped(RecipeCategory.BUILDING_BLOCKS, ModItems.PAPERBARK_DOOR_ITEM)
+                        .input('#', ItemTags.WOODEN_DOORS)
+                        .input('X', Items.BIRCH_PLANKS)
+                        .pattern("X")
+                        .pattern("X")
+                        .pattern("#")
+                        .criterion(hasItem(Items.BIRCH_PLANKS), this.conditionsFromItem(Items.BIRCH_PLANKS))
                         .offerTo(exporter);
             }
         };

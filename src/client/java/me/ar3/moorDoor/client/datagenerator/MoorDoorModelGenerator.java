@@ -1,11 +1,13 @@
 package me.ar3.moorDoor.client.datagenerator;
 
 import me.ar3.moorDoor.ModBlocks;
+import me.ar3.moorDoor.MoorDoor;
+import me.ar3.moorDoor.block.TripleDoorBlock;
+import me.ar3.moorDoor.block.TripleDoorSection;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.DoorHinge;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.data.*;
 import net.minecraft.client.render.model.json.WeightedVariant;
 import net.minecraft.state.property.Properties;
@@ -19,27 +21,37 @@ import static net.minecraft.client.data.TextureMap.getSubId;
 
 public class MoorDoorModelGenerator extends FabricModelProvider {
 
+    private static final TextureKey MIDDLE = TextureKey.of("middle");
+
     public MoorDoorModelGenerator(FabricDataOutput output) {
         super(output);
     }
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        registerTripleHeightDoor(blockStateModelGenerator, ModBlocks.TALL_DOOR);
+        registerTripleHeightDoorModel(blockStateModelGenerator, ModBlocks.STEEL_DOOR);
+        registerTripleHeightDoorModel(blockStateModelGenerator, ModBlocks.PAPERBARK_DOOR);
+    }
+
+    @Override
+    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+        itemModelGenerator.register(ModBlocks.STEEL_DOOR.asItem(), Models.GENERATED);
+        itemModelGenerator.register(ModBlocks.PAPERBARK_DOOR.asItem(), Models.GENERATED);
     }
 
     private static Model block(String parent, String variant, TextureKey... requiredTextureKeys) {
-        return new Model(Optional.of(Identifier.ofVanilla("block/" + parent)), Optional.of(variant), requiredTextureKeys);
+        return new Model(Optional.of(Identifier.of(MoorDoor.MOD_ID, "block/" + parent)), Optional.of(variant), requiredTextureKeys);
     }
 
-    private void registerTripleHeightDoor(BlockStateModelGenerator blockStateModelGenerator, net.minecraft.block.Block doorBlock) {
+    private void registerTripleHeightDoorModel(BlockStateModelGenerator blockStateModelGenerator, net.minecraft.block.Block doorBlock) {
 
-        Model DOOR_MIDDLE_LEFT = block("door_middle_left", "_middle_left", TextureKey.TOP, TextureKey.BOTTOM);
-        Model DOOR_MIDDLE_LEFT_OPEN = block("door_middle_left_open", "_middle_left_open", TextureKey.TOP, TextureKey.BOTTOM);
-        Model DOOR_MIDDLE_RIGHT = block("door_middle_right", "_middle_right", TextureKey.TOP, TextureKey.BOTTOM);
-        Model DOOR_MIDDLE_RIGHT_OPEN = block("door_middle_right_open", "_middle_right_open", TextureKey.TOP, TextureKey.BOTTOM);
+        Model DOOR_MIDDLE_LEFT = block("door_middle_left", "_middle_left", MIDDLE);
+        Model DOOR_MIDDLE_LEFT_OPEN = block("door_middle_left_open", "_middle_left_open", MIDDLE);
+        Model DOOR_MIDDLE_RIGHT = block("door_middle_right", "_middle_right", MIDDLE);
+        Model DOOR_MIDDLE_RIGHT_OPEN = block("door_middle_right_open", "_middle_right_open", MIDDLE);
 
         TextureMap textureMap = topBottomMiddle(doorBlock);
+
         WeightedVariant bottomLeft = createWeightedVariant(Models.DOOR_BOTTOM_LEFT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
         WeightedVariant bottomLeftOpen = createWeightedVariant(Models.DOOR_BOTTOM_LEFT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
         WeightedVariant bottomRight = createWeightedVariant(Models.DOOR_BOTTOM_RIGHT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
@@ -50,123 +62,90 @@ public class MoorDoorModelGenerator extends FabricModelProvider {
         WeightedVariant middleRight = createWeightedVariant(DOOR_MIDDLE_RIGHT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
         WeightedVariant middleRightOpen = createWeightedVariant(DOOR_MIDDLE_RIGHT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
 
-        WeightedVariant weightedVariant5 = createWeightedVariant(Models.DOOR_TOP_LEFT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
-        WeightedVariant weightedVariant6 = createWeightedVariant(Models.DOOR_TOP_LEFT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
-        WeightedVariant weightedVariant7 = createWeightedVariant(Models.DOOR_TOP_RIGHT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
-        WeightedVariant weightedVariant8 = createWeightedVariant(Models.DOOR_TOP_RIGHT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
-//        blockStateModelGenerator.registerItemModel(doorBlock.asItem());
+        WeightedVariant topLeft = createWeightedVariant(Models.DOOR_TOP_LEFT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
+        WeightedVariant topLeftOpen = createWeightedVariant(Models.DOOR_TOP_LEFT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
+        WeightedVariant topRight = createWeightedVariant(Models.DOOR_TOP_RIGHT.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
+        WeightedVariant topRightOpen = createWeightedVariant(Models.DOOR_TOP_RIGHT_OPEN.upload(doorBlock, textureMap, blockStateModelGenerator.modelCollector));
+
         blockStateModelGenerator.blockStateCollector.accept(createThreeDoorBlockState(doorBlock,
                 bottomLeft, bottomLeftOpen, bottomRight, bottomRightOpen,
-//                middleLeft, middleLeftOpen, middleRight, middleRightOpen,
-                weightedVariant5, weightedVariant6, weightedVariant7, weightedVariant8
+                middleLeft, middleLeftOpen, middleRight, middleRightOpen,
+                topLeft, topLeftOpen, topRight, topRightOpen
         ));
-
-//        TextureMap bottomTexture = TextureMap.texture(doorBlock)
-//            .put(TextureKey.TOP, new Identifier("moor-door:block/tall_door_bottom_top"))
-//            .put(TextureKey.BOTTOM, new Identifier("moor-door:block/tall_door_bottom"));
-//        TextureMap middleTexture = TextureMap.texture(doorBlock)
-//            .put(TextureKey.TOP, new Identifier("moor-door:block/tall_door_middle_top"))
-//            .put(TextureKey.BOTTOM, new Identifier("moor-door:block/tall_door_middle_bottom"));
-//        TextureMap topTexture = TextureMap.texture(doorBlock)
-//            .put(TextureKey.TOP, new Identifier("moor-door:block/tall_door_top"))
-//            .put(TextureKey.BOTTOM, new Identifier("moor-door:block/tall_door_top_bottom"));
-//
-//        // Register models for each section and state
-//
-//        Identifier bottomLeftClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_bottom_left", Models.DOOR_BOTTOM_LEFT, bottomTexture);
-//        Identifier bottomLeftOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_bottom_left_open", Models.DOOR_BOTTOM_LEFT_OPEN, bottomTexture);
-//        Identifier bottomRightClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_bottom_right", Models.DOOR_BOTTOM_RIGHT, bottomTexture);
-//        Identifier bottomRightOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_bottom_right_open", Models.DOOR_BOTTOM_RIGHT_OPEN, bottomTexture);
-//
-//        Identifier middleLeftClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_middle_left", Models.DOOR_BOTTOM_LEFT, middleTexture);
-//        Identifier middleLeftOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_middle_left_open", Models.DOOR_BOTTOM_LEFT_OPEN, middleTexture);
-//        Identifier middleRightClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_middle_right", Models.DOOR_BOTTOM_RIGHT, middleTexture);
-//        Identifier middleRightOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_middle_right_open", Models.DOOR_BOTTOM_RIGHT_OPEN, middleTexture);
-//
-//        Identifier topLeftClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_top_left", Models.DOOR_TOP_LEFT, topTexture);
-//        Identifier topLeftOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_top_left_open", Models.DOOR_TOP_LEFT_OPEN, topTexture);
-//        Identifier topRightClosed = blockStateModelGenerator.createDoorModel(doorBlock, "_top_right", Models.DOOR_TOP_RIGHT, topTexture);
-//        Identifier topRightOpen = blockStateModelGenerator.createDoorModel(doorBlock, "_top_right_open", Models.DOOR_TOP_RIGHT_OPEN, topTexture);
-
-        // Register blockstate variants using VariantsBlockStateSupplier
-//        blockStateModelGenerator.blockStateCollector.accept(
-//                VariantsBlockModelDefinitionCreator.of(doorBlock, BlockStateModelGenerator.createModelVariant())
-//                        .with(
-//                                new WeightedVariant(new ModelVariant())
-//                        )
-//                        .coordinate(BlockStateModelGenerator.createModelVariant(
-//                                bottomLeftClosed, bottomLeftOpen, bottomRightClosed, bottomRightOpen,
-//                                middleLeftClosed, middleLeftOpen, middleRightClosed, middleRightOpen,
-//                                topLeftClosed, topLeftOpen, topRightClosed, topRightOpen
-//                        ))
-//                        .put(VariantSettings.HINGE, DoorHinge.LEFT)
-//                        .put(VariantSettings.FACING, Direction.NORTH)
-//                        .put(VariantSettings.OPEN, false)
-//                        .put(Properties.DOUBLE_BLOCK_HALF, Properties.DoubleBlockHalf.LOWER)
-//            VariantsBlockStateSupplier.create(doorBlock)
-//                .coordinate(BlockStateModelGenerator.createModelVariant(
-//                    bottomLeftClosed, bottomLeftOpen, bottomRightClosed, bottomRightOpen,
-//                    middleLeftClosed, middleLeftOpen, middleRightClosed, middleRightOpen,
-//                    topLeftClosed, topLeftOpen, topRightClosed, topRightOpen
-//                ))
-//        );
     }
 
-    @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        itemModelGenerator.register(ModBlocks.TALL_DOOR.asItem(), Models.GENERATED);
-    }
-
-    private static BlockModelDefinitionCreator createThreeDoorBlockState(Block doorBlock, WeightedVariant bottomLeftClosedModel, WeightedVariant bottomLeftOpenModel, WeightedVariant bottomRightClosedModel, WeightedVariant bottomRightOpenModel, WeightedVariant topLeftClosedModel, WeightedVariant topLeftOpenModel, WeightedVariant topRightClosedModel, WeightedVariant topRightOpenModel) {
+    private static BlockModelDefinitionCreator createThreeDoorBlockState(
+            Block doorBlock,
+            WeightedVariant bottomLeftClosedModel, WeightedVariant bottomLeftOpenModel, WeightedVariant bottomRightClosedModel, WeightedVariant bottomRightOpenModel,
+            WeightedVariant middleLeftClosedModel, WeightedVariant middleLeftOpenModel, WeightedVariant middleRightClosedModel, WeightedVariant middleRightOpenModel,
+            WeightedVariant topLeftClosedModel, WeightedVariant topLeftOpenModel, WeightedVariant topRightClosedModel, WeightedVariant topRightOpenModel
+    ) {
         return VariantsBlockModelDefinitionCreator.of(doorBlock).with(
                 BlockStateVariantMap.models(
                         Properties.HORIZONTAL_FACING,
-                        Properties.DOUBLE_BLOCK_HALF,
+                        TripleDoorBlock.SECTION,
                         Properties.DOOR_HINGE, Properties.OPEN
-                ).register(
-                        Direction.EAST,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.LEFT,
-                        false,
-                        bottomLeftClosedModel
-                ).register(
-                        Direction.SOUTH,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.LEFT,
-                        false,
-                        bottomLeftClosedModel.apply(ROTATE_Y_90)
-                ).register(
-                        Direction.WEST,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.LEFT,
-                        false,
-                        bottomLeftClosedModel.apply(ROTATE_Y_180)
-                ).register(Direction.NORTH,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.LEFT,
-                        false,
-                        bottomLeftClosedModel.apply(ROTATE_Y_270)
-                ).register(Direction.EAST,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.RIGHT,
-                        false,
-                        bottomRightClosedModel
-                ).register(Direction.SOUTH,
-                        DoubleBlockHalf.LOWER,
-                        DoorHinge.RIGHT,
-                        false,
-                        bottomRightClosedModel.apply(ROTATE_Y_90)
-                ).register(Direction.WEST, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel.apply(ROTATE_Y_180)).register(Direction.NORTH, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel.apply(ROTATE_Y_270)).register(Direction.EAST, DoubleBlockHalf.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_90)).register(Direction.SOUTH, DoubleBlockHalf.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_180)).register(Direction.WEST, DoubleBlockHalf.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_270)).register(Direction.NORTH, DoubleBlockHalf.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel).register(Direction.EAST, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_270)).register(Direction.SOUTH, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel).register(Direction.WEST, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_90)).register(Direction.NORTH, DoubleBlockHalf.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_180)).register(Direction.EAST, DoubleBlockHalf.UPPER, DoorHinge.LEFT, false, topLeftClosedModel).register(Direction.SOUTH, DoubleBlockHalf.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_90)).register(Direction.WEST, DoubleBlockHalf.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_180)).register(Direction.NORTH, DoubleBlockHalf.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_270)).register(Direction.EAST, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, false, topRightClosedModel).register(Direction.SOUTH, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_90)).register(Direction.WEST, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_180)).register(Direction.NORTH, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_270)).register(Direction.EAST, DoubleBlockHalf.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_90)).register(Direction.SOUTH, DoubleBlockHalf.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_180)).register(Direction.WEST, DoubleBlockHalf.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_270)).register(Direction.NORTH, DoubleBlockHalf.UPPER, DoorHinge.LEFT, true, topLeftOpenModel).register(Direction.EAST, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, true, topRightOpenModel.apply(ROTATE_Y_270)).register(Direction.SOUTH, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, true, topRightOpenModel).register(Direction.WEST, DoubleBlockHalf.UPPER, DoorHinge.RIGHT, true, topRightOpenModel.apply(ROTATE_Y_90)).register(Direction.NORTH,
-                        DoubleBlockHalf.UPPER,
-                        DoorHinge.RIGHT,
-                        true,
-                        topRightOpenModel.apply(ROTATE_Y_180)));
+                )
+                        .register(Direction.EAST, TripleDoorSection.LOWER, DoorHinge.LEFT, false, bottomLeftClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.LOWER, DoorHinge.LEFT, false, bottomLeftClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.LOWER, DoorHinge.LEFT, false, bottomLeftClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.LOWER, DoorHinge.LEFT, false, bottomLeftClosedModel.apply(ROTATE_Y_270))
+                        .register(Direction.EAST, TripleDoorSection.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.LOWER, DoorHinge.RIGHT, false, bottomRightClosedModel.apply(ROTATE_Y_270))
+
+                        .register(Direction.EAST, TripleDoorSection.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.SOUTH, TripleDoorSection.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_180))
+                        .register(Direction.WEST, TripleDoorSection.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.NORTH, TripleDoorSection.LOWER, DoorHinge.LEFT, true, bottomLeftOpenModel)
+                        .register(Direction.EAST, TripleDoorSection.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.SOUTH, TripleDoorSection.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel)
+                        .register(Direction.WEST, TripleDoorSection.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.NORTH, TripleDoorSection.LOWER, DoorHinge.RIGHT, true, bottomRightOpenModel.apply(ROTATE_Y_180))
+
+                        .register(Direction.EAST, TripleDoorSection.MIDDLE, DoorHinge.LEFT, false, middleLeftClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.MIDDLE, DoorHinge.LEFT, false, middleLeftClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.MIDDLE, DoorHinge.LEFT, false, middleLeftClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.MIDDLE, DoorHinge.LEFT, false, middleLeftClosedModel.apply(ROTATE_Y_270))
+                        .register(Direction.EAST, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, false, middleRightClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, false, middleRightClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, false, middleRightClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, false, middleRightClosedModel.apply(ROTATE_Y_270))
+
+                        .register(Direction.EAST, TripleDoorSection.MIDDLE, DoorHinge.LEFT, true, middleLeftOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.SOUTH, TripleDoorSection.MIDDLE, DoorHinge.LEFT, true, middleLeftOpenModel.apply(ROTATE_Y_180))
+                        .register(Direction.WEST, TripleDoorSection.MIDDLE, DoorHinge.LEFT, true, middleLeftOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.NORTH, TripleDoorSection.MIDDLE, DoorHinge.LEFT, true, middleLeftOpenModel)
+                        .register(Direction.EAST, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, true, middleRightOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.SOUTH, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, true, middleRightOpenModel)
+                        .register(Direction.WEST, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, true, middleRightOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.NORTH, TripleDoorSection.MIDDLE, DoorHinge.RIGHT, true, middleRightOpenModel.apply(ROTATE_Y_180))
+
+                        .register(Direction.EAST, TripleDoorSection.UPPER, DoorHinge.LEFT, false, topLeftClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.UPPER, DoorHinge.LEFT, false, topLeftClosedModel.apply(ROTATE_Y_270))
+                        .register(Direction.EAST, TripleDoorSection.UPPER, DoorHinge.RIGHT, false, topRightClosedModel)
+                        .register(Direction.SOUTH, TripleDoorSection.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_90))
+                        .register(Direction.WEST, TripleDoorSection.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_180))
+                        .register(Direction.NORTH, TripleDoorSection.UPPER, DoorHinge.RIGHT, false, topRightClosedModel.apply(ROTATE_Y_270))
+
+                        .register(Direction.EAST, TripleDoorSection.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.SOUTH, TripleDoorSection.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_180))
+                        .register(Direction.WEST, TripleDoorSection.UPPER, DoorHinge.LEFT, true, topLeftOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.NORTH, TripleDoorSection.UPPER, DoorHinge.LEFT, true, topLeftOpenModel)
+                        .register(Direction.EAST, TripleDoorSection.UPPER, DoorHinge.RIGHT, true, topRightOpenModel.apply(ROTATE_Y_270))
+                        .register(Direction.SOUTH, TripleDoorSection.UPPER, DoorHinge.RIGHT, true, topRightOpenModel)
+                        .register(Direction.WEST, TripleDoorSection.UPPER, DoorHinge.RIGHT, true, topRightOpenModel.apply(ROTATE_Y_90))
+                        .register(Direction.NORTH, TripleDoorSection.UPPER, DoorHinge.RIGHT, true, topRightOpenModel.apply(ROTATE_Y_180))
+        );
     }
 
     private static TextureMap topBottomMiddle(Block block) {
         return (new TextureMap())
                 .put(TextureKey.TOP, getSubId(block, "_top"))
-                .put(TextureKey.of("middle"), getSubId(block, "_middle"))
+                .put(MIDDLE, getSubId(block, "_middle"))
                 .put(TextureKey.BOTTOM, getSubId(block, "_bottom"));
     }
 }
